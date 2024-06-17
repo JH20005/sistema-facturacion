@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddClienteToVentasTable extends Migration
+class AddTransaccionIdToVentasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,13 +14,8 @@ class AddClienteToVentasTable extends Migration
     public function up()
     {
         Schema::table('ventas', function (Blueprint $table) {
-            $table->id();
-            $table->string('cliente'); // Columna cliente
-            $table->unsignedBigInteger('inventario_id'); // Agrega la clave foránea
-            $table->foreign('inventario_id')->references('id')->on('inventarios');
-            $table->integer('cantidad');
-            $table->decimal('preciounitario', 8, 2);
-            $table->timestamps();
+            $table->unsignedBigInteger('transaccion_id')->nullable()->after('id');
+            $table->foreign('transaccion_id')->references('id')->on('transacciones')->onDelete('cascade');
         });
     }
 
@@ -32,7 +27,8 @@ class AddClienteToVentasTable extends Migration
     public function down()
     {
         Schema::table('ventas', function (Blueprint $table) {
-            //
+            $table->dropForeign(['transaccion_id']);
+            $table->dropColumn('transaccion_id');
         });
     }
 }

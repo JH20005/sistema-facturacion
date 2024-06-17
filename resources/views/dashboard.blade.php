@@ -57,6 +57,11 @@
                                             Ventas
                                         </a>
                                     </th>
+                                    <th style="width: 33.33%;">
+                                        <a href="{{ route('transacciones.index') }}" class="btn btn-primary btn-lg fas fa-cart-arrow-down">
+                                            Transacciones
+                                        </a>
+                                    </th>
                                 </tr>
                             </thead>
                         

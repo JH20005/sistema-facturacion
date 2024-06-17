@@ -21,6 +21,9 @@ class CreateVentasTable extends Migration
             $table->integer('cantidad');
             $table->decimal('preciounitario', 10, 2);
             $table->timestamps();
+            $table->foreign('transaccion_id')->references('id')->on('transacciones')->onDelete('cascade');
+            $table->foreign('inventario_id')->references('id')->on('inventarios')->onDelete('cascade');
+
         });
     }
 

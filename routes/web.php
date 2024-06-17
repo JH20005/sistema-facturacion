@@ -4,6 +4,7 @@ use App\Http\Controllers\PersonasController;
 use App\Http\Controllers\InventarioController;
 use App\Http\Controllers\VentasController;
 use App\Http\Controllers\Auth\CustomLoginController;
+use App\Http\Controllers\TransaccionController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -55,6 +56,9 @@ Route::delete('/ventas/{id}', [VentasController::class, 'destroy'])->name('venta
 
 Route::get('ventas/{id}/print', [VentasController::class, 'print'])->name('ventas.print');
 
+Route::get('/transaccion/{id}', [VentasController::class, 'mostrarTransaccion'])->name('transaccion.mostrar');
+Route::get('/transacciones', [TransaccionController::class, 'index'])->name('transacciones.index');
+Route::get('/transacciones/{id}', [TransaccionController::class, 'show'])->name('transacciones.show');
 
 //PARA EL LOGIN
 

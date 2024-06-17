@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Ventas;
 use Illuminate\Http\Request;
 use App\Models\Inventario; 
+use Illuminate\Support\Facades\DB;
+use App\Models\Transaccion;
+use Illuminate\Support\Facades\Log;
 
 
 class VentasController extends Controller
@@ -32,29 +35,44 @@ class VentasController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'cliente' => 'required|string',
+            'productos.*.inventario_id' => 'required|exists:inventarios,id',
+            'productos.*.cantidad' => 'required|integer|min:1',
+            'productos.*.preciounitario' => 'required|numeric|min:0',
+        ]);
 
-                // Validar los datos del formulario
-                $request->validate([
-                    'cliente' => 'required|string|max:255',
-                    'inventario_id' => 'required|exists:inventarios,id',
-                    'cantidad' => 'required|integer|min:1',
-                    'preciounitario' => 'required|numeric|min:0', // Asegúrate de validar el precio unitario si es necesario
+        DB::beginTransaction();
+        try {
+            $montoTotal = array_reduce($request->input('productos'), function($carry, $producto) {
+                return $carry + ($producto['cantidad'] * $producto['preciounitario']);
+            }, 0);
+
+            $transaccion = new Transaccion([
+                'descripcion' => 'Venta realizada por ' . $request->input('cliente'),
+                'monto_total' => $montoTotal,
+            ]);
+            $transaccion->save();
+
+            foreach ($request->input('productos') as $producto) {
+                $venta = new Ventas([
+                    'cliente' => $request->input('cliente'),
+                    'inventario_id' => $producto['inventario_id'],
+                    'cantidad' => $producto['cantidad'],
+                    'preciounitario' => $producto['preciounitario'],
+                    'transaccion_id' => $transaccion->id,
                 ]);
-                 // Crear nueva venta
-                 $venta = new Ventas();
-                 $venta->cliente = $request->cliente;
-                 $venta->inventario_id = $request->inventario_id;
-                 $venta->cantidad = $request->cantidad;
-                 $venta->preciounitario = $request->preciounitario; // Asegúrate de que este campo esté presente en el formulario
-                 
-                 $venta->save();
 
-                         // Actualizar la cantidad disponible en el inventario
-                    $inventario = Inventario::findOrFail($request->inventario_id);
-                    $inventario->actualizarCantidadDisponible($request->cantidad);
-                 // Redireccionar a la vista de detalles de la venta
-                 return redirect()->route('ventas.show', $venta->id)->with('success', 'Venta creada exitosamente.');
-    
+                $venta->save();
+            }
+
+            DB::commit();
+            return redirect()->route('ventas.index')->with('success', 'Venta registrada correctamente.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error al registrar la venta: ' . $e->getMessage());
+            return redirect()->route('ventas.create')->with('error', 'Hubo un problema al registrar la venta. Error: ' . $e->getMessage());
+        }
 
     }
 
@@ -101,6 +119,18 @@ class VentasController extends Controller
 
         // Redireccionar o retornar una respuesta
         return redirect()->route('ventas.index')->with('success', 'Venta eliminada correctamente.');
+    }
+
+    
+    public function mostrarTransaccion($id)
+    {
+        $ventas = Ventas::where('transaccion_id', $id)->get();
+        
+        // Cargar la transacción para la primera venta (ejemplo)
+        $primeraVenta = $ventas->first();
+        $transaccion = $primeraVenta->transaccion; // Accede a la relación definida en el modelo
+
+        return view('ventas.transaccion', compact('ventas', 'transaccion'));
     }
 
 }

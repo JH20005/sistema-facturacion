@@ -18,4 +18,12 @@ class Ventas extends Model
     {
         return $this->belongsTo(Inventario::class, 'inventario_id');
     }
+
+   // protected $table = 'ventas';
+
+    // Relación con la transacción
+    public function transaccion()
+    {
+        return $this->belongsTo(Transaccion::class);
+    }
 }
