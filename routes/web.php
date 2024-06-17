@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\PersonasController;
 use App\Http\Controllers\InventarioController;
+use App\Http\Controllers\VentasController;
+use App\Http\Controllers\Auth\CustomLoginController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -36,16 +38,40 @@ Route::get('/inventarioshow/{id}',[InventarioController::class,'show'])->name('i
 Route::post('/inventariostore',[InventarioController::class,'store'])->name('inventario.store');
 Route::put('/inventarioupdate/{id}',[InventarioController::class,'update'])->name('inventario.update');
 Route::delete('/inventariodestroy/{id}',[InventarioController::class,'destroy'])->name('inventario.destroy');
-/*
 
 
 
 
+//VENTAS
+// Rutas para el controlador de ventas
+Route::get('/ventas', [VentasController::class, 'index'])->name('ventas.index');
+Route::get('/ventas/create', [VentasController::class, 'create'])->name('ventas.create');
+Route::post('/ventas', [VentasController::class, 'store'])->name('ventas.store');
+Route::get('/ventas/{id}', [VentasController::class, 'show'])->name('ventas.show');
+Route::get('/ventas/{id}/edit', [VentasController::class, 'edit'])->name('ventas.edit');
+Route::put('/ventas/{id}', [VentasController::class, 'update'])->name('ventas.update');
+Route::delete('/ventas/{id}', [VentasController::class, 'destroy'])->name('ventas.destroy');
+
+
+Route::get('ventas/{id}/print', [VentasController::class, 'print'])->name('ventas.print');
+
+
+//PARA EL LOGIN
 
 
 
+// Rutas de autenticación
+Route::get('/login', [CustomLoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [CustomLoginController::class, 'login']);
+Route::post('/logout', [CustomLoginController::class, 'logout'])->name('logout');
 
-/*PARA EL LOGIN*/
+Route::get('/dashboard', function () {    return view('dashboard');});
+Route::get('/', function () {
+    return view('welcome');
+});
+
+
+/*PARA EL LOGIN
 Route::get('/', function(){
     return view('welcome');
 });
@@ -70,3 +96,4 @@ Route::post('login',function(){
     }
     return redirect('login');   
 });
+*/

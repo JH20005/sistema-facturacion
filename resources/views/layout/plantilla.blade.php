@@ -10,6 +10,9 @@
     <!-- fontawesome btn -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous"/>
     <title>@yield('TituloPagina')</title>
+    
+    <!-- Estilos de impresión específicos -->
+    <link rel="stylesheet" href="{{ asset('css/print-styles.css') }}">
   </head>
   <body>
     
@@ -30,5 +33,16 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
     -->
+        <!-- Aquí puedes incluir tus scripts JavaScript, jQuery, etc. -->
+        <script src="{{ asset('js/app.js') }}"></script>
+    
+        <!-- Stack para scripts específicos de cada vista -->
+        @stack('scripts')
+        <!-- Script para la función de impresión -->
+        <script>
+          function imprimir() {
+              window.print(); // Esta función imprime la página actual
+          }
+        </script>
   </body>
 </html>

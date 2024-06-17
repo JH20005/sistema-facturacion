@@ -42,8 +42,21 @@
                         <table class="table table-sm table-bordered text-center">
                             <thead>
                                 <tr>
-                                <th style="width: 50%;"><a href="/inicio" class="btn btn-primary btn-lg fas fa-user"  >   Cliente</a></th>
-                                <th style="width: 50%;"><a href="/inventarioinicio" class="btn btn-primary btn-lg fas fa-shopping-basket"  >   Inventario</a></th>
+                                    <th style="width: 33.33%;">
+                                        <a href="{{ route('personas.index') }}" class="btn btn-primary btn-lg fas fa-user">
+                                            Cliente
+                                        </a>
+                                    </th>
+                                    <th style="width: 33.33%;">
+                                        <a href="{{ route('inventario.index') }}" class="btn btn-primary btn-lg fas fa-shopping-basket">
+                                            Inventario
+                                        </a>
+                                    </th>
+                                    <th style="width: 33.33%;">
+                                        <a href="{{ route('ventas.index') }}" class="btn btn-primary btn-lg fas fa-money-bill">
+                                            Ventas
+                                        </a>
+                                    </th>
                                 </tr>
                             </thead>
                         

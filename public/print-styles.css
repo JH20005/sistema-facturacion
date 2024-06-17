@@ -1,0 +1,22 @@
+/* public/css/print-styles.css */
+
+@media print {
+    /* Estilos de impresión específicos */
+    body {
+        font-family: Arial, sans-serif;
+    }
+    .card {
+        margin: 20px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    .card-header {
+        background-color: #f0f0f0;
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+    }
+    .card-body {
+        padding: 10px;
+    }
+}
