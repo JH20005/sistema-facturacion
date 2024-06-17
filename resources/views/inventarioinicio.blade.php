@@ -76,6 +76,10 @@
                 </div>
             </div>
           </p>
+          <div id="informacion">
+            <a href="/dashboard" class="btn btn-primary  fas fa-home"  >   Dashboard</a>
+            
+          </div>
           
         </div>
     </div>
