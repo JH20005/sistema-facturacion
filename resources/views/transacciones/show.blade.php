@@ -5,6 +5,7 @@
         <h1>Detalles de la Transacción</h1>
 
         <p>ID de Transacción: {{ $transaccion->id }}</p>
+        <p>Monto Total: {{ $transaccion->monto_total }}</p>
         <p>Fecha: {{ $transaccion->created_at }}</p>
 
         <h2>Ventas de esta Transacción:</h2>
@@ -25,7 +26,7 @@
                     <tr>
                         <td>{{ $venta->id }}</td>
                         <td>{{ $venta->cliente }}</td>
-                        <td>{{ $venta->producto }}</td> <!-- Ajusta el nombre del campo según tu estructura de datos -->
+                        <td>{{ $venta->inventario->descripcion }}</td> <!-- Accede a la relación inventario para obtener la descripción del producto -->
                         <td>{{ $venta->cantidad }}</td>
                         <td>{{ $venta->preciounitario }}</td>
                         <td>{{ $venta->cantidad * $venta->preciounitario }}</td> <!-- Calcula el total de la venta -->
@@ -33,5 +34,6 @@
                 @endforeach
             </tbody>
         </table>
+        
     </div>
 @endsection

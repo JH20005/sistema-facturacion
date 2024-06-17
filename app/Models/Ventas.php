@@ -12,6 +12,7 @@ class Ventas extends Model
         'inventario_id',
         'cantidad',
         'preciounitario',
+        'transaccion_id',
     ];
 
     public function inventario()

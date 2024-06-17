@@ -60,6 +60,7 @@ Route::get('/transaccion/{id}', [VentasController::class, 'mostrarTransaccion'])
 Route::get('/transacciones', [TransaccionController::class, 'index'])->name('transacciones.index');
 Route::get('/transacciones/{id}', [TransaccionController::class, 'show'])->name('transacciones.show');
 
+
 //PARA EL LOGIN
 
 

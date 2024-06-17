@@ -15,12 +15,8 @@ class TransaccionController extends Controller
 
     public function show($id)
     {
-        $transaccion = Transaccion::with('ventas')->find($id);
-        
-        if (!$transaccion) {
-            abort(404); // Manejo de transacción no encontrada
-        }
-        
+        $transaccion = Transaccion::with('ventas')->findOrFail($id);
+
         return view('transacciones.show', compact('transaccion'));
     }
 }
