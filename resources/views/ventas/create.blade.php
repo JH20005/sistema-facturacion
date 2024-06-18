@@ -16,9 +16,15 @@
         <form method="POST" action="{{ route('ventas.store') }}">
             @csrf
 
+            <!-- Campo para seleccionar la persona -->
             <div class="form-group">
-                <label for="cliente">Cliente</label>
-                <input type="text" name="cliente" id="cliente" class="form-control" value="{{ old('cliente') }}" required>
+                <label for="persona_id">Persona</label>
+                <select name="persona_id" id="persona_id" class="form-control" required>
+                    <option value="">Selecciona una persona</option>
+                    @foreach($personas as $persona)
+                        <option value="{{ $persona->id }}">{{ $persona->nombre }}</option>
+                    @endforeach
+                </select>
             </div>
 
             <div id="productos">

@@ -8,6 +8,7 @@ use App\Models\Inventario;
 use Illuminate\Support\Facades\DB;
 use App\Models\Transaccion;
 use Illuminate\Support\Facades\Log;
+use App\Models\Personas; 
 
 
 class VentasController extends Controller
@@ -27,16 +28,18 @@ class VentasController extends Controller
     {
         // Obtener todos los productos del inventario
         $inventarios = Inventario::all();
+        $personas = Personas::all(); // Obtener todas las personas
         // Depurar para verificar los datos obtenidos
         //dd($inventarios);
-        return view('ventas.create', compact('inventarios'));
+        return view('ventas.create', compact('inventarios','personas'));
         
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'cliente' => 'required|string',
+            
+            'persona_id' => 'required|exists:personas,id',
             'productos.*.inventario_id' => 'required|exists:inventarios,id',
             'productos.*.cantidad' => 'required|integer|min:1',
             'productos.*.preciounitario' => 'required|numeric|min:0',
@@ -54,9 +57,12 @@ class VentasController extends Controller
             ]);
             $transaccion->save();
 
+                    // Obtener la persona asociada a la venta
+            $persona = Personas::findOrFail($request->persona_id);
+
             foreach ($request->input('productos') as $producto) {
                 $venta = new Ventas([
-                    'cliente' => $request->input('cliente'),
+                    'persona_id' => $request->input('persona_id'),
                     'inventario_id' => $producto['inventario_id'],
                     'cantidad' => $producto['cantidad'],
                     'preciounitario' => $producto['preciounitario'],

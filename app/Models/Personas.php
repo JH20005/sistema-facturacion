@@ -7,5 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Personas extends Model
 {
-    use HasFactory;
+    protected $fillable = ['nombre'];
+    public function ventas()
+    {
+        return $this->hasMany(Ventas::class);
+    }
 }

@@ -27,4 +27,9 @@ class Ventas extends Model
     {
         return $this->belongsTo(Transaccion::class);
     }
+    
+    public function persona()
+    {
+        return $this->belongsTo(Personas::class, 'persona_id');
+    }
 }
