@@ -36,56 +36,64 @@ class VentasController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            
-            'persona_id' => 'required|exists:personas,id',
-            'productos.*.inventario_id' => 'required|exists:inventarios,id',
-            'productos.*.cantidad' => 'required|integer|min:1',
-            'productos.*.preciounitario' => 'required|numeric|min:0',
+{
+    $request->validate([
+        'persona_id' => 'required|exists:personas,id',
+        'productos.*.inventario_id' => 'required|exists:inventarios,id',
+        'productos.*.cantidad' => 'required|integer|min:1',
+        'productos.*.preciounitario' => 'required|numeric|min:0',
+    ]);
+
+    DB::beginTransaction();
+    try {
+        // Obtener la persona asociada a la venta
+        $persona = Personas::findOrFail($request->persona_id);
+
+        // Calcular monto total
+        $montoTotal = array_reduce($request->input('productos'), function($carry, $producto) {
+            return $carry + ($producto['cantidad'] * $producto['preciounitario']);
+        }, 0);
+
+        // Crear transacción
+        $transaccion = new Transaccion([
+            'descripcion' => 'Venta realizada por ' . $request->input('persona_id'), // Ajustar según tu lógica
+            'monto_total' => $montoTotal,
         ]);
+        $transaccion->save();
 
-        DB::beginTransaction();
-        try {
-            $montoTotal = array_reduce($request->input('productos'), function($carry, $producto) {
-                return $carry + ($producto['cantidad'] * $producto['preciounitario']);
-            }, 0);
-
-            $transaccion = new Transaccion([
-                'descripcion' => 'Venta realizada por ' . $request->input('cliente'),
-                'monto_total' => $montoTotal,
+        // Guardar ventas
+        foreach ($request->input('productos') as $producto) {
+            $venta = new Ventas([
+                //'cliente' => $request->input('persona_id'), // Ajustar según tu lógica
+                'cliente' => $persona->nombre, // Aquí usas el nombre de la persona
+                'inventario_id' => $producto['inventario_id'],
+                'cantidad' => $producto['cantidad'],
+                'preciounitario' => $producto['preciounitario'],
+                'transaccion_id' => $transaccion->id,
             ]);
-            $transaccion->save();
+            $venta->save();
 
-                    // Obtener la persona asociada a la venta
-            $persona = Personas::findOrFail($request->persona_id);
-
-            foreach ($request->input('productos') as $producto) {
-                $venta = new Ventas([
-                    'persona_id' => $request->input('persona_id'),
-                    'inventario_id' => $producto['inventario_id'],
-                    'cantidad' => $producto['cantidad'],
-                    'preciounitario' => $producto['preciounitario'],
-                    'transaccion_id' => $transaccion->id,
-                ]);
-
-                $venta->save();
-                            
-                // Actualizar el inventario: restar la cantidad vendida
-                $inventario = Inventario::findOrFail($producto['inventario_id']);
+            // Actualizar inventario
+            $inventario = Inventario::findOrFail($producto['inventario_id']);
+            if ($inventario->cantidadisponible >= $producto['cantidad']) {
                 $inventario->cantidadisponible -= $producto['cantidad'];
                 $inventario->save();
+            } else {
+                // Manejar el caso en que no haya suficiente inventario
+                throw new \Exception('No hay suficiente inventario para el producto ' . $inventario->descripcion);
             }
-
-            DB::commit();
-            return redirect()->route('ventas.index')->with('success', 'Venta registrada correctamente.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Error al registrar la venta: ' . $e->getMessage());
-            return redirect()->route('ventas.create')->with('error', 'Hubo un problema al registrar la venta. Error: ' . $e->getMessage());
         }
 
+        DB::commit();
+        return redirect()->route('ventas.index')->with('success', 'Venta registrada correctamente.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        Log::error('Error al registrar la venta: ' . $e->getMessage());
+        return redirect()->route('ventas.create')->with('error', 'Hubo un problema al registrar la venta. Error: ' . $e->getMessage());
     }
+}
+
+
 
     public function show($id)
     {

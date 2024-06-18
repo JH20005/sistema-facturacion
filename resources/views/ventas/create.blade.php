@@ -44,6 +44,7 @@
                     <div class="form-group">
                         <label for="productos[0][cantidad]">Cantidad</label>
                         <input type="number" name="productos[0][cantidad]" class="form-control cantidad" required>
+                        
                     </div>
 
                     <input type="hidden" name="productos[0][preciounitario]" class="preciounitario">
@@ -58,26 +59,26 @@
     @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            let productIndex = 1;
-
+            let productIndex = 0; // Empieza con 0 para el primer producto
+    
             document.getElementById('addProduct').addEventListener('click', function () {
                 let productosDiv = document.getElementById('productos');
                 let newProductDiv = document.querySelector('.producto').cloneNode(true);
-
+    
                 newProductDiv.querySelectorAll('select, input').forEach(input => {
-                    input.name = input.name.replace(/\d+/, productIndex);
+                    input.name = input.name.replace(/\[\d+\]/, '[' + productIndex + ']');
                     if (input.classList.contains('preciounitario')) {
                         input.value = '';
                     }
                 });
-
+    
                 newProductDiv.querySelector('select').value = '';
                 newProductDiv.querySelector('.cantidad').value = '';
-
+    
                 productosDiv.appendChild(newProductDiv);
                 productIndex++;
             });
-
+    
             document.getElementById('productos').addEventListener('change', function (event) {
                 if (event.target.tagName === 'SELECT' && event.target.classList.contains('inventario-select')) {
                     let selectedOption = event.target.options[event.target.selectedIndex];
