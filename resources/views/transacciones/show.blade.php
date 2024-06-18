@@ -10,6 +10,7 @@
 
         <h2>Ventas de esta Transacción:</h2>
 
+
         <table class="table">
             <thead>
                 <tr>
@@ -34,6 +35,25 @@
                 @endforeach
             </tbody>
         </table>
-        
+        <button onclick="imprimirTransaccion({{ $transaccion->id }})" class="btn btn-primary">Imprimir Transacción #{{ $transaccion->id }}</button>
+        <a href="/transacciones" class="btn btn-primary  fas fa-cart-arrow-down"  >   Transacciones</a>
     </div>
+        
+        <!-- Puedes agregar más detalles de la transacción según necesites -->
+
+
 @endsection
+
+@push('scripts')
+    <script>
+        function imprimirTransaccion(transaccionId) {
+            // Abre una nueva ventana o pestaña con la ruta de impresión
+            let newWindow = window.open('{{ route('transacciones.imprimir', ['id' => $transaccion->id]) }}', '_blank');
+            
+            // Ejecuta la impresión cuando la ventana esté completamente cargada
+            newWindow.onload = function() {
+                newWindow.print(); // Inicia la impresión
+            };
+        }
+    </script>
+@endpush

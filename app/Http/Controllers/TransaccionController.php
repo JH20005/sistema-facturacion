@@ -19,4 +19,9 @@ class TransaccionController extends Controller
 
         return view('transacciones.show', compact('transaccion'));
     }
+    public function imprimir($id)
+    {
+        $transaccion = Transaccion::findOrFail($id);
+        return view('transacciones.imprimir', compact('transaccion'));
+    }
 }

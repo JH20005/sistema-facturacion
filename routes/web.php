@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -56,10 +57,12 @@ Route::delete('/ventas/{id}', [VentasController::class, 'destroy'])->name('venta
 
 Route::get('ventas/{id}/print', [VentasController::class, 'print'])->name('ventas.print');
 
+//TRANSACCIONES
+
 Route::get('/transaccion/{id}', [VentasController::class, 'mostrarTransaccion'])->name('transaccion.mostrar');
 Route::get('/transacciones', [TransaccionController::class, 'index'])->name('transacciones.index');
 Route::get('/transacciones/{id}', [TransaccionController::class, 'show'])->name('transacciones.show');
-
+Route::get('/transacciones/{id}/imprimir', [TransaccionController::class, 'imprimir'])->name('transacciones.imprimir');
 
 //PARA EL LOGIN
 
