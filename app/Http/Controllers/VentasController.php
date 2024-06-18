@@ -64,6 +64,11 @@ class VentasController extends Controller
                 ]);
 
                 $venta->save();
+                            
+                // Actualizar el inventario: restar la cantidad vendida
+                $inventario = Inventario::findOrFail($producto['inventario_id']);
+                $inventario->cantidadisponible -= $producto['cantidad'];
+                $inventario->save();
             }
 
             DB::commit();
